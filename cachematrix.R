@@ -1,15 +1,34 @@
-## Put comments here that give an overall description of what your
-## functions do
+## These functions enables to cache the solved matrix of a
+## matrix to avoid computing it many times
 
-## Write a short comment describing this function
+## This function creates an object that stores a matrix and its solved one
 
 makeCacheMatrix <- function(x = matrix()) {
-
+    solvedMatrix <- NULL
+    set <- function(y) {
+        x <<- y
+        solvedMatrix <- NULL
+    }
+    get <- function() x
+    setSolve <- function(invert) solvedMatrix <<- invert
+    getSolve <- function() solvedMatrix
+    list(set = set, get = get,
+         setSolve = setSolve,
+         getSolve = getSolve)
 }
 
 
-## Write a short comment describing this function
+## This function enables to get the solved matrix at the lower computation cost
+## it uses the cache one if available or computes it and store it
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+    solved <- x$getSolve()
+    if (!is.null(solved)){
+        # solved one is already computed and cached
+        return(solved)
+    }
+    data <- x$get()
+    solved <- solve(data, ...)
+    x$setSolve(solved)
+    solved
 }
